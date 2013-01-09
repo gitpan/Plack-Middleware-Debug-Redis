@@ -1,0 +1,65 @@
+NAME
+    Plack::Middleware::Debug::Redis - Extend Plack::Middleware::Debug with
+    Redis panels
+
+VERSION
+    version 0.01
+
+SYNOPSIS
+        # inside your psgi app
+        use Plack::Builder;
+
+        my $app = sub {[
+            200,
+            [ 'Content-Type' => 'text/html' ],
+            [ '<html><body>OK</body></html>' ]
+        ]};
+        my $redis_host = 'redi.example.com:6379';
+
+        builder {
+            mount '/' => builder {
+                enable 'Debug',
+                    panels => [
+                        [ 'Redis::Info', server => $redis_host ],
+                        [ 'Redis::Keys', server => $redis_host, db => 3 ],
+                    ];
+                $app;
+            };
+        };
+
+DESCRIPTION
+    This distribution extends Plack::Middleware::Debug with some Redis
+    panels. At the moment, the following panels available:
+
+PANELS
+  Redis::Info
+    Diplay panel with generic Redis server information which is available by
+    the command INFO. See Plack::Middleware::Debug::Redis::Info for
+    additional information.
+
+  Redis::Keys
+    Diplay panel with keys Redis server information. See
+    Plack::Middleware::Debug::Redis::Keys for additional information.
+
+BUGS
+    Please report any bugs or feature requests through the web interface at
+    <https://github.com/Wu-Wu/Plack-Middleware-Debug-Redis/issues>
+
+SEE ALSO
+    Plack::Middleware::Debug::Redis::Info
+
+    Plack::Middleware::Debug::Redis::Keys
+
+    Plack::Middleware::Debug
+
+    Redis
+
+AUTHOR
+    Anton Gerasimov, <chim@cpan.org>
+
+COPYRIGHT AND LICENSE
+    Copyright (C) 2013 by Anton Gerasimov
+
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+

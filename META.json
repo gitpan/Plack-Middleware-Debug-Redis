@@ -1,0 +1,53 @@
+{
+   "abstract" : "Extend Plack::Middleware::Debug with Redis panels",
+   "author" : [
+      "Anton Gerasimov <chim@cpan.org>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "ExtUtils::MakeMaker version 6.64, CPAN::Meta::Converter version 2.112621",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Plack-Middleware-Debug-Redis",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "inc"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Test::More" : "0.98",
+            "Test::Pod" : "1.22"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : 0
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Plack::Middleware::Debug" : 0,
+            "Redis" : "1.955",
+            "perl" : "5.010001",
+            "strict" : 0
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/Wu-Wu/Plack-Middleware-Debug-Redis/issues"
+      },
+      "repository" : {
+         "url" : "https://github.com/Wu-Wu/Plack-Middleware-Debug-Redis"
+      }
+   },
+   "version" : "0.01"
+}

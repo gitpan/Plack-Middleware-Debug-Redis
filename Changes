@@ -1,0 +1,4 @@
+Revision history for Perl extension Plack::Middleware::Debug::Redis.
+
+0.01  Tue Jan  8 12:30:26 2013
+	- original version
