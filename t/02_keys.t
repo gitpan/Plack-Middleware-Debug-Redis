@@ -4,9 +4,24 @@ use Plack::Test;
 use Plack::Builder;
 use HTTP::Request::Common;
 use Test::More;
-use File::Spec;
-use lib File::Spec->catdir( 't', 'lib' );
-use FakeRedis;
+use Test::MockObject;
+
+my $KEYS = {
+    'coy:knows:pseudonoise:codes'      => [ 'string', 9000 ],
+    'six:slimy:snails:sailed:silently' => [ 'list', 35 ],
+    'eleven:benevolent:elephants'      => [ 'hash', 17 ],
+    'two:tried:and:true:tridents'      => [ 'set', 101 ],
+    'tie:twine:to:three:tree:twigs'    => [ 'zset', 66 ],
+};
+
+sub generic_len { exists $KEYS->{$_[1]} ? $KEYS->{$_[1]}->[1] : undef };
+
+my $fakeredis = Test::MockObject->new;
+Test::MockObject->fake_module('Redis', new => sub { $fakeredis }, VERSION => sub { '1.955' });
+$fakeredis->set_true('select', 'quit', 'ping');
+$fakeredis->mock('keys', sub { keys %$KEYS });
+$fakeredis->mock('type', sub { exists $KEYS->{$_[1]} ? $KEYS->{$_[1]}->[0] : undef });
+map { $fakeredis->mock($_, sub { &generic_len(@_) }) } qw/strlen hlen llen scard zcard/;
 
 {
     my $app = builder {

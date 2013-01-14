@@ -18,12 +18,16 @@ my %options = (
     'LICENSE'       => 'perl',
     'PREREQ_PM'     => {
         'Redis'                    => '1.955',
+        'Plack'                    => '0.9979',
         'Plack::Middleware::Debug' => 0,
         'strict'                   => 0,
     },
     'BUILD_REQUIRES' => {
-        'Test::More' => '0.98',
-        'Test::Pod'  => '1.22',
+        'Test::More'       => '0.98',
+        'Test::Pod'        => '1.22',
+        'Plack'            => '0.9979',
+        'HTTP::Message'    => 0,
+        'Test::MockObject' => 0,
     },
     'MIN_PERL_VERSION' => '5.10.1',
     'test' => {

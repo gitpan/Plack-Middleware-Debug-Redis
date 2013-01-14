@@ -22,6 +22,9 @@
    "prereqs" : {
       "build" : {
          "requires" : {
+            "HTTP::Message" : 0,
+            "Plack" : "0.9979",
+            "Test::MockObject" : 0,
             "Test::More" : "0.98",
             "Test::Pod" : "1.22"
          }
@@ -33,6 +36,7 @@
       },
       "runtime" : {
          "requires" : {
+            "Plack" : "0.9979",
             "Plack::Middleware::Debug" : 0,
             "Redis" : "1.955",
             "perl" : "5.010001",
@@ -49,5 +53,5 @@
          "url" : "https://github.com/Wu-Wu/Plack-Middleware-Debug-Redis"
       }
    },
-   "version" : "0.01"
+   "version" : "0.02"
 }

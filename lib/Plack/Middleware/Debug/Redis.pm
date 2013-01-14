@@ -3,7 +3,7 @@ package Plack::Middleware::Debug::Redis;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 1; # End of Plack::Middleware::Debug::Redis
@@ -15,7 +15,7 @@ Plack::Middleware::Debug::Redis - Extend Plack::Middleware::Debug with Redis pan
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 

@@ -4,9 +4,20 @@ use Plack::Test;
 use Plack::Builder;
 use HTTP::Request::Common;
 use Test::More;
-use File::Spec;
-use lib File::Spec->catdir( 't', 'lib' );
-use FakeRedis;
+use Test::MockObject;
+
+my $INFO = {
+    'redis_version'     => '0.1.99',
+    'db0'               => 'keys=167,expires=145',
+    'db1'               => 'keys=75,expires=0',
+    'uptime_in_seconds' => '1591647',
+    'role'              => 'master',
+};
+
+my $fakeredis = Test::MockObject->new;
+Test::MockObject->fake_module('Redis', new => sub { $fakeredis }, VERSION => sub { '1.955' });
+$fakeredis->set_true('select', 'quit', 'ping');
+$fakeredis->mock('info', sub { $INFO });
 
 {
     my $app = builder {
