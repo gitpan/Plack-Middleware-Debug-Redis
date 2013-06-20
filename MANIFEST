@@ -1,15 +1,21 @@
 Changes
-Makefile.PL
 LICENSE
 MANIFEST
+META.json
+META.yml
+Makefile.PL
 README
+dist.ini
 eg/app.psgi
-t/00_load.t
-t/01_info.t
-t/02_keys.t
-t/99_pod.t
 lib/Plack/Middleware/Debug/Redis.pm
 lib/Plack/Middleware/Debug/Redis/Info.pm
 lib/Plack/Middleware/Debug/Redis/Keys.pm
-META.yml                                 Module YAML meta-data (added by MakeMaker)
-META.json                                Module JSON meta-data (added by MakeMaker)
+t/00-compile.t
+t/01-panel-info.t
+t/02-panel-keys.t
+t/lib/FakeRedis.pm
+t/release-distmeta.t
+t/release-kwalitee.t
+t/release-pod-coverage.t
+t/release-pod-syntax.t
+t/release-test-version.t

@@ -6,8 +6,8 @@ builder {
     mount '/' => builder {
         enable 'Debug',
             panels => [
-                [ 'Redis::Info', server => $redis_host ],
-                [ 'Redis::Keys', server => $redis_host, db => 0 ],
+                [ 'Redis::Info', instance => $redis_host ],
+                [ 'Redis::Keys', instance => $redis_host, db => 0 ],
             ];
         sub {
             [

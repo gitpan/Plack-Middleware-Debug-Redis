@@ -1,29 +1,18 @@
 package Plack::Middleware::Debug::Redis::Keys;
 
+# ABSTRACT: Redis keys debug panel
+
 use strict;
 use warnings;
-use v5.10.1;
-use Redis 1.955;
-use parent 'Plack::Middleware::Debug::Base';
-use Plack::Util::Accessor qw/server password db redis_handle/;
+use parent qw(Plack::Middleware::Debug::Base Plack::Middleware::Debug::Redis);
 
-our $VERSION = '0.01';
+our $VERSION = '0.03'; # VERSION
+our $AUTHORITY = 'cpan:CHIM'; # AUTHORITY
 
 sub prepare_app {
-    my $self = shift;
+    my ($self) = @_;
 
-    $self->server('localhost:6379') unless defined $self->server;
-    $self->db(0) unless defined $self->db;
-
-    my @opts = (
-        server    => $self->server,
-        reconnect => 60,
-        encoding  => undef,
-        debug     => 0,
-    );
-    push @opts, (password => $self->password) if $self->password;
-
-    $self->redis_handle(Redis->new(@opts));
+    $self->redis_connect;
 }
 
 sub run {
@@ -32,35 +21,38 @@ sub run {
     $panel->title('Redis::Keys');
     $panel->nav_title($panel->title);
 
+    my %measure = (
+        'HASH'   => 'hlen',
+        'LIST'   => 'llen',
+        'STRING' => 'strlen',
+        'ZSET'   => 'zcard',
+        'SET'    => 'scard',
+    );
+
     return sub {
         my ($res) = @_;
 
         my ($keyz, $ktype, $klen);
-        $self->redis_handle->select($self->db);
-        my @keys = $self->redis_handle->keys('*');
+        $self->redis->select($self->db);
+        my @keys = $self->redis->keys('*');
         $panel->nav_subtitle('DB #' . $self->db . ' (' . scalar(@keys) . ')');
 
         for my $key (sort @keys) {
-            $ktype = uc($self->redis_handle->type($key));
+            $ktype = uc($self->redis->type($key));
 
-            given ($ktype) {
-                when ('HASH')   { $klen = $self->redis_handle->hlen($key);   }
-                when ('LIST')   { $klen = $self->redis_handle->llen($key);   }
-                when ('STRING') { $klen = $self->redis_handle->strlen($key); }
-                when ('ZSET')   { $klen = $self->redis_handle->zcard($key);  }
-                when ('SET')    { $klen = $self->redis_handle->scard($key);  }
-                default         { $klen = undef;                }
-            }
+            my $method = exists $measure{$ktype} ? $measure{$ktype} : undef;
+
+            $klen = $method ? $self->redis->$method($key) : undef;
 
             $keyz->{$key} = $ktype . ($klen ? ' (' . $klen . ')' : '');
         }
 
-        $self->redis_handle->quit;
         $panel->content($self->render_hash($keyz));
     };
 }
 
 1; # End of Plack::Middleware::Debug::Redis::Keys
+
 __END__
 
 =pod
@@ -69,12 +61,16 @@ __END__
 
 Plack::Middleware::Debug::Redis::Keys - Redis keys debug panel
 
+=head1 VERSION
+
+version 0.03
+
 =head1 SYNOPSIS
 
     # inside your psgi app
     enable 'Debug',
         panels => [
-            [ 'Redis::Keys', server => 'redis.example.com:6379', db => 3 ],
+            [ 'Redis::Keys', instance => 'redis.example.com:6379', db => 3 ],
         ];
 
 =head1 DESCRIPTION
@@ -104,17 +100,13 @@ See L<Plack::Middleware::Debug>
 
 See L<Plack::Middleware::Debug>
 
-=head2 server
+=head2 redis_connect
 
-Hostname and port of redis server instance. Default value is 'localhost:6379'.
+See L<Plack::Middleware::Debug::Redis>
 
-=head2 password
+=head2 redis
 
-Password to authenticate on redis server instance in case of enabled redis' option B<requirepass>.
-
-=head2 db
-
-Redis database number to get statistic for keys. Default value is 0.
+See L<Plack::Middleware::Debug::Redis>
 
 =head1 BUGS
 
@@ -123,19 +115,21 @@ L<https://github.com/Wu-Wu/Plack-Middleware-Debug-Redis/issues>
 
 =head1 SEE ALSO
 
+L<Plack::Middleware::Debug::Redis>
+
 L<Plack::Middleware::Debug>
 
 L<Redis>
 
 =head1 AUTHOR
 
-Anton Gerasimov, E<lt>chim@cpan.orgE<gt>
+Anton Gerasimov <chim@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2013 by Anton Gerasimov
+This software is copyright (c) 2013 by Anton Gerasimov.
 
-This library is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut
